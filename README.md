@@ -1,4 +1,4 @@
 # csv
 
-inspired by <https://github.com/fabiospampinato/csv-simple-parser>. 564 bytes
+inspired by <https://github.com/fabiospampinato/csv-simple-parser>. 565 bytes
 min+gzip.
