@@ -36,7 +36,7 @@ export const parser = (
 ) =>
 (csv: string) => {
   let len = csv.length, state = State.LIMIT, raw = false, fix = false, size;
-  if (!len--) return 1;
+  if (!len--) return;
   const at = csv.charCodeAt.bind(csv), eol = /\r?\n|\r/.exec(csv)?.[0] ?? "\n";
   let z = 0, y = 0, x = 0, w = 0;
   do switch (at(z) | state) {
