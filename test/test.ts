@@ -1,5 +1,5 @@
 import { assert, assertEquals, assertThrows } from "@std/assert";
-import { parser } from "./mod.ts";
+import { parser } from "../main.ts";
 
 const array = (csv: string, skip = false) => {
   let row: string[];
