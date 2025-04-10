@@ -1,4 +1,4 @@
 # csv
 
-inspired by <https://github.com/fabiospampinato/csv-simple-parser>. 565 bytes
-min+gzip.
+csv parsing, based on <https://github.com/fabiospampinato/csv-simple-parser>.
+tests from rfc4180. 565 bytes min+gzip.
