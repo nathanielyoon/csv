@@ -1,62 +1,56 @@
-/** Current location - inside field, after field, or after delimiter. */
 const enum State {
-  FIELD = 1 << 16,
-  AFTER = 1 << 17,
-  LIMIT = 1 << 18,
+  FIELD = 1 << 16, // inside field
+  AFTER = 1 << 17, // after field
+  LIMIT = 1 << 18, // after delimiter
 }
-/** Parses CSV. */
-export const parser = (csv: string) => {
-  const rows: (string | null)[][] = [];
-  let len = csv.length, state = State.LIMIT, row = [], field;
-  if (!len--) return rows; // empty string
-  let z = 0, y = 0, x = 0, raw = false, fix = false;
-  do switch (csv.charCodeAt(z) | state) {
-    case 0x0a | State.FIELD:
-    case 0x0d | State.FIELD:
-      if (!raw) break;
-      x++ || rows.push(row = []), row.push(csv.slice(y, z) || null);
-      raw = fix = false;
-    case 0x0a | State.LIMIT:
-    case 0x0d | State.LIMIT:
-      state === State.LIMIT && (x++ || rows.push(row = []), row.push(null));
-    case 0x0d | State.AFTER:
-      csv.charCodeAt(z) === 0x0d && z < len &&
-        csv.charCodeAt(z + 1) === 0x0a && ++z;
-    case 0x0a | State.AFTER:
-      state = State.LIMIT, x = 0;
+/** Parses CSV, returns null if invalid. */
+export const parse = (csv: string) => {
+  const to: (string | null)[][] = [];
+  let len = csv.length, add;
+  if (!len--) return to; // empty string
+  let z = 0, y = 0, x = 0, w = 0, $ = State.LIMIT, on = true, fix = false;
+  do switch (csv.charCodeAt(z) | $) {
+    case 10 | State.FIELD:
+    case 13 | State.FIELD:
+      if (on) break;
+      w || to.push([]), to[x][w++] = csv.slice(y, z), on = true, fix = false;
+    case 10 | State.LIMIT:
+    case 13 | State.LIMIT:
+      if ($ === State.LIMIT) w || to.push([]), to[x][w++] = null;
+    case 13 | State.AFTER:
+      csv.charCodeAt(z) === 13 && z < len && csv.charCodeAt(-~z) === 10 && ++z;
+    case 10 | State.AFTER:
+      $ = State.LIMIT, ++x, w = 0;
       break;
-    case 0x22 | State.FIELD:
-      if (!raw) {
-        if (z < len && csv.charCodeAt(z + 1) === 0x22) fix = true, ++z;
+    case 34 | State.FIELD:
+      if (on) {
+        if (z < len && csv.charCodeAt(z + 1) === 34) fix = true, ++z;
         else {
-          field = fix ? csv.slice(y, z).replace(/""/g, '"') : csv.slice(y, z);
-          x++ || rows.push(row = []), row.push(field);
-          state = State.AFTER, raw = fix = false;
+          w || to.push([]), add = csv.slice(y, z), $ = State.AFTER, on = true;
+          to[x][w++] = fix ? add.replaceAll('""', '"') : add, fix = false;
         }
         break;
       }
-    case 0x22 | State.AFTER:
-      return null;
-    case 0x22 | State.LIMIT:
-      y = z + 1, state = State.FIELD, fix = false;
+    case 34 | State.AFTER:
+      return null; // trailing quote
+    case 34 | State.LIMIT:
+      y = z + 1, $ = State.FIELD, fix = false;
       break;
-    case 0x2c | State.FIELD:
-      if (!raw) break;
-      x++ || rows.push(row = []), row.push(csv.slice(y, z) || null);
-      raw = fix = false;
-    case 0x2c | State.AFTER:
-      state = State.LIMIT;
+    case 44 | State.FIELD:
+      if (on) break;
+      w || to.push([]), to[x][w++] = csv.slice(y, z), on = true, fix = false;
+    case 44 | State.AFTER:
+      $ = State.LIMIT;
       break;
-    case 0x2c | State.LIMIT:
-      x++ || rows.push(row = []), row.push(null);
+    case 44 | State.LIMIT:
+      w || to.push([]), to[x][w++] = null;
       break;
     default:
-      if (state === State.LIMIT) {
-        state = State.FIELD, y = z, raw = true, fix = false;
-      }
+      if ($ === State.LIMIT) $ = State.FIELD, y = z, on = fix = false;
   } while (z++ < len);
-  if (state === State.FIELD) {
-    if (!raw) return null;
-    x && row.push(csv.slice(y) || null);
+  if ($ === State.FIELD) {
+    if (on) return null; // unmatched quote
+    w || to.push([]), to[x][w] = csv.slice(y);
   }
+  return to;
 };
