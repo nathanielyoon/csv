@@ -22,7 +22,7 @@ const enum On {
   CM_LIMIT = 0x2c | State.LIMIT,
 }
 /** Converts a CSV string to an array of rows. */
-export const csv_json = ($: string) => {
+export const csv_json = ($: string): Row[] | null => {
   // The empty string ("") must be a quoted field to differentiate from `null`.
   // Idea from [this blog post](https://archive.is/r00xC).
   const a: Row[] = [], b = $.charCodeAt.bind($);
@@ -79,7 +79,7 @@ export const csv_json = ($: string) => {
     : a;
 };
 /** Converts an array of rows to a CSV string. */
-export const json_csv = ($: (string | null)[][]) => {
+export const json_csv = ($: (string | null)[][]): string => {
   let a = "";
   for (let z = 0; z < $.length; a = a.replace(/,?$/, "\n"), ++z) {
     for (let y = 0, b = $[z]; y < b.length; ++y) {
