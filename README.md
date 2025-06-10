@@ -3,8 +3,8 @@
 Read and write CSV.
 
 ```ts
-import { assertEquals } from "@std/assert";
 import { csv_json, json_csv } from "@nyoon/csv";
+import { assertEquals } from "@std/assert";
 
 const csv = `aaa,bbb,ccc
 zzz,yyy,xxx
