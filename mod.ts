@@ -22,21 +22,21 @@ const enum On {
   CM_LIMIT = 0x2c | State.LIMIT,
 }
 /** Converts a CSV string to an array of rows. */
-export const csv_json = ($: string): Row[] | null => {
+export const csv_json = (csv: string): Row[] | null => {
   // The empty string ("") must be a quoted field to differentiate from `null`.
   // Idea from [this blog post](https://archive.is/r00xC).
-  const a: Row[] = [], b = $.charCodeAt.bind($);
+  const a: Row[] = [], b = csv.charCodeAt.bind(csv);
   // The actual length is only referenced in the empty-string check. Everywhere
   // else is to see if a character is second-to-last, where it's more convenient
   // to compare to `length` than to `length - 1`, so do that operation up front.
-  let c = $.length;
+  let c = csv.length;
   if (!c--) return a; // postdecrement so 0-length resolves to `!0` not `!-1`
   let z = 0, y = 0, x = 0, w = 0, d = State.LIMIT, e = true, f = true, g;
   do switch (b(z) | d) {
     case On.LF_FIELD:
     case On.CR_FIELD:
       if (e) break;
-      w || a.push([]), a[x][w++] = $.slice(y, z), e = f = true; // falls through
+      w || a.push([]), a[x][w++] = csv.slice(y, z), e = f = true; // falls through
     case On.LF_LIMIT:
     case On.CR_LIMIT:
       if (d === State.LIMIT) w || a.push([]), a[x][w++] = null; // falls through
@@ -49,7 +49,7 @@ export const csv_json = ($: string): Row[] | null => {
       if (e) {
         if (z < c && b(z + 1) === 34) f = false, ++z;
         else {
-          w || a.push([]), g = $.slice(y, z), d = State.AFTER;
+          w || a.push([]), g = csv.slice(y, z), d = State.AFTER;
           a[x][w++] = f ? g : g.replaceAll('""', '"'), e = f = true;
         }
         break;
@@ -61,7 +61,7 @@ export const csv_json = ($: string): Row[] | null => {
       break;
     case On.CM_FIELD:
       if (e) break;
-      w || a.push([]), a[x][w++] = $.slice(y, z), e = f = true; // falls through
+      w || a.push([]), a[x][w++] = csv.slice(y, z), e = f = true; // falls through
     case On.CM_AFTER:
       d = State.LIMIT;
       break;
@@ -74,15 +74,15 @@ export const csv_json = ($: string): Row[] | null => {
   // Reading the end of the CSV string like this creates inconsistency in edge
   // cases, e.g. with non-EOL-terminated final rows, but those are probably the
   // result of an upstream error.
-  return d === State.FIELD && (w || a.push([]), a[x][w] = $.slice(y), e)
+  return d === State.FIELD && (w || a.push([]), a[x][w] = csv.slice(y), e)
     ? null
     : a;
 };
 /** Converts an array of rows to a CSV string. */
-export const json_csv = ($: (string | null)[][]): string => {
+export const json_csv = (json: (string | null)[][]): string => {
   let a = "";
-  for (let z = 0; z < $.length; a = a.replace(/,?$/, "\n"), ++z) {
-    for (let y = 0, b = $[z]; y < b.length; ++y) {
+  for (let z = 0; z < json.length; a = a.replace(/,?$/, "\n"), ++z) {
+    for (let y = 0, b = json[z]; y < b.length; ++y) {
       const c = b[y];
       a += `${
         c == null
