@@ -1,5 +1,4 @@
 import { assertEquals } from "@std/assert";
-import fc from "fast-check";
 import { csv_json, json_csv } from "@nyoon/csv";
 
 Deno.test("csv_json", () =>
