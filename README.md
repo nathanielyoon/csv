@@ -1,6 +1,6 @@
 # csv
 
-Read and write CSV.
+Read and write CSV ([RFC 4180](https://rfc-editor.org/rfc/rfc4180)).
 
 ```ts
 import { csv_json, json_csv } from "@nyoon/csv";
