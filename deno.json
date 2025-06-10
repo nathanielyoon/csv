@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/denoland/deno/refs/heads/main/cli/schemas/config-file.v1.json",
   "name": "@nyoon/csv",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "exports": "./mod.ts",
   "lint": {
     "rules": {
@@ -9,10 +9,10 @@
       "exclude": ["ban-types", "no-cond-assign", "no-explicit-any"]
     }
   },
-  "imports": {
-    "@std/assert": "jsr:@std/assert@^1.0.13"
-  },
   "tasks": {
     "test": "deno test --allow-all --no-check --parallel --doc"
+  },
+  "imports": {
+    "@std/assert": "jsr:@std/assert@^1.0.13"
   }
 }
