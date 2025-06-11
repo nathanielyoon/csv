@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert";
-import { csv_json, json_csv } from "@nyoon/csv";
+import { csv_json, json_csv } from "./mod.ts";
 
 Deno.test("csv_json", () =>
   Promise.all([
