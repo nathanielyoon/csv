@@ -4,7 +4,7 @@ Read and write CSV ([RFC 4180](https://rfc-editor.org/rfc/rfc4180)).
 
 ```ts
 import { csv_json, json_csv } from "@nyoon/csv";
-import { assertEquals } from "@std/assert";
+import { assertEquals } from "jsr:@std/assert@^1.0.13";
 
 const csv = `aaa,bbb,ccc
 zzz,yyy,xxx

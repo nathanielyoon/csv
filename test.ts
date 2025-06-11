@@ -1,4 +1,4 @@
-import { assertEquals } from "@std/assert";
+import { assertEquals } from "jsr:@std/assert@^1.0.13";
 import { csv_json, json_csv } from "./mod.ts";
 
 Deno.test("csv_json", () =>
