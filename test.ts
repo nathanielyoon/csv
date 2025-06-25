@@ -26,13 +26,21 @@ Deno.test("csv_json", () =>
       ).then((response) => response.text())
     ))
   )).then(($) =>
-    $.concat([["", "[]"], ['a"', "null"], ['"a', "null"]])
-      .forEach(([csv, json]) =>
-        assertEquals(
-          csv_json(csv)?.map(($) => $.map(($) => $ ?? "")) ?? null,
-          JSON.parse(json),
-        )
+    $.concat([
+      ["", "[]"],
+      ['""', '[[""]]'],
+      ['a"', "null"],
+      ['"a', "null"],
+      [",a", '[["","a"]]'],
+      ["a\r", '[["a"]]'],
+      ["a\ra", '[["a"],["a"]]'],
+      ["a\r\n", '[["a"]]'],
+    ]).forEach(([csv, json]) =>
+      assertEquals(
+        csv_json(csv)?.map(($) => $.map(($) => $ ?? "")) ?? null,
+        JSON.parse(json),
       )
+    )
   ));
 Deno.test("json_csv", () =>
   [
